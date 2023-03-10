@@ -5,8 +5,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <iframe src="" className="border">iframe test</iframe>
 
-        <iframe src="">iframe test</iframe>
       </header>
     </div>
   );
