@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../App.css';
 
 const Child = () => {
   const [childMsg, setChildMsg] = useState('');
@@ -7,10 +8,10 @@ const Child = () => {
   const postToParent = () => {
     window.parent.postMessage(
       {
-        type: "button-click",
+        type: 'button-click',
         message: childMsg,
       },
-      "*"
+      '*'
     );
   };
 
@@ -21,9 +22,18 @@ const Child = () => {
 
   return (
     <>
-      <h1 className="">Child Component</h1>
-      <input onChange={handleInputChange}></input>
-      <button onClick={postToParent}>Post</button>
+      <div>
+        <h1 className=''>Confirm Purchase</h1>
+        <input onChange={handleInputChange}></input>
+        <button onClick={postToParent}>Post</button>
+        <button
+          onClick={() => {
+            window.open('https://www.example.com/');
+          }}
+        >
+          Purchase
+        </button>
+      </div>
     </>
   );
 };
