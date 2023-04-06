@@ -1,10 +1,9 @@
 import Game from './components/Game';
-import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
   return (
-    <div className='flex justify-center items-center'>
+    <div className='flex justify-center items-center h-screen bg-gradient-to-bl from-purple-900 to-blue-500'>
       <Game />
     </div>
   );
