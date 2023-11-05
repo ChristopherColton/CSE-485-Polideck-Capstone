@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import '../App.css';
+import { useState } from "react";
+import "../App.css";
 
 const Child = () => {
-  const [childMsg, setChildMsg] = useState('');
+  const [childMsg, setChildMsg] = useState("");
 
   // post a message to the parent page
   const postToParent = () => {
     window.parent.postMessage(
       {
-        type: 'button-click',
+        type: "button-click",
         message: childMsg,
       },
-      '*'
+      "*",
     );
   };
 
@@ -23,12 +23,12 @@ const Child = () => {
   return (
     <>
       <div>
-        <h1 className=''>Confirm Purchase</h1>
+        <h1 className="">Confirm Purchase</h1>
         <input onChange={handleInputChange}></input>
         <button onClick={postToParent}>Post</button>
         <button
           onClick={() => {
-            window.open('https://www.example.com/');
+            window.open("https://www.example.com/");
           }}
         >
           Purchase

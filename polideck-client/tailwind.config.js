@@ -4,10 +4,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'righteous': ['Righteous', 'sans-serif'],
-        'lato': ['Lato', 'sans-serif'],
+        righteous: ["Righteous", "sans-serif"],
+        lato: ["Lato", "sans-serif"],
       },
     },
   },
   plugins: [],
-}
+};
