@@ -1,5 +1,5 @@
 import Game from "./components/Game";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ImmortalStorage, CookieStore, LocalStorageStore } from "immortal-db";
 import { ethers } from "ethers";
 import "./App.css";
@@ -123,7 +123,7 @@ function App() {
   //Gets wallet into immortalDB
   async function getJWT() {
     let decoded = atob(await db.get("jwt"));
-    if (decoded == "ée") {
+    if (decoded === "ée") {
       return null;
     }
     return decoded;
@@ -146,11 +146,16 @@ function App() {
   }
 
   //Begin Ethereum Wallet Transaction Listener
-  window.addEventListener("message", (message) => {
-    // when transaction event occurs
-    console.log(message);
-    // verify user and wallet
-  });
+  useEffect(() => {
+    const handleMsg = (event) => {
+      if(event.data && event.data.type === 'button-click') {
+        console.log("cost is: $" + event.data.message)
+      }
+    }
+    window.addEventListener("message", handleMsg);
+
+    return () => window.removeEventListener("message", handleMsg);
+  }, [])
 
   // value can be json data
   // TODO: fetch JSON from cookies / localstorage and validate via JSON validation library

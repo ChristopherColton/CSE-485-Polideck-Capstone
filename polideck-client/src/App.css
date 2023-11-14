@@ -36,3 +36,58 @@
     transform: rotate(360deg);
   }
 }
+
+/* Child.css */
+
+.child-container {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px auto; /* Center the container */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  max-width: 400px; /* Set a max width for the container */
+}
+
+.child-title {
+  color: #ffffff;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.child-input {
+  background-color: #333333;
+  border: 1px solid #555555;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  width: 100%; /* Full width */
+}
+
+.child-input::placeholder {
+  color: #bbb;
+}
+
+.child-validation-message {
+  color: #ff5555;
+  margin-top: 5px;
+}
+
+.child-button {
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Full width */
+}
+
+.child-button:hover {
+  background-color: #66bb6a;
+}
+
+.iframe-bg {
+  background-color: "#1e1e1e";
+}

@@ -1,5 +1,6 @@
 import CustomIframe from "./CustomIframe";
 import Child from "./Child";
+import "../App.css";
 
 const Modal = ({ open, onClose, children }) => {
   return (
@@ -18,13 +19,13 @@ const Modal = ({ open, onClose, children }) => {
 
       {/* content */}
       <div
-        className={`fixed bg-white shadow-lg w-full max-w-screen-sm p-4 transition-opacity duration-300 ${
+        className={`fixed bg-iframe m-0 shadow-lg w-full max-w-screen-sm p-4 transition-opacity duration-300 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
         <button onClick={onClose}>X</button>
         <CustomIframe title="Child IFrame">
-          <Child />
+          <Child/>
         </CustomIframe>
         {children}
       </div>
