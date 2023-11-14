@@ -19,11 +19,11 @@ function App() {
   //Maintains JWT validity
   async function maintainJWT(newJWT) {
     let jwt = newJWT;
-    if (jwt == undefined) {
+    if (jwt === undefined) {
       jwt = await getJWT();
     }
 
-    if (jwt == undefined || shouldRenew(jwt)) {
+    if (jwt === undefined || shouldRenew(jwt)) {
       let baseURL = "http://127.0.0.1:4000"; //"https://auth.exilirate.com"
       console.log("Renewing JWT");
       const wallet = await getWallet();
@@ -100,7 +100,7 @@ function App() {
 
   //Check if wallet exists
   async function walletExists() {
-    if ((await db.get("exWallet")) == undefined) {
+    if ((await db.get("exWallet")) === undefined) {
       return false;
     } else {
       return true;
@@ -131,8 +131,10 @@ function App() {
 
   async function initWallet() {
     let walletStatus = await walletExists();
+    console.log("wallet status validated")
     if (!walletStatus) {
       let etherWallet = await ethers.Wallet.createRandom();
+      console.log("ether wallet does not exist; created random")
       let wallet = {
         address: etherWallet.address,
         publicKey: etherWallet.publicKey,
@@ -140,23 +142,11 @@ function App() {
         mnenomic: etherWallet.mnemonic,
       };
       await putWallet(wallet);
+      console.log("wallet put into storage");
       etherWallet = null;
     }
     return;
   }
-
-  //Begin Ethereum Wallet Transaction Listener
-  useEffect(() => {
-    const handleMsg = (event) => {
-      if(event.data && event.data.type === 'button-click') {
-        console.log("cost is: $" + event.data.message)
-      }
-    }
-    window.addEventListener("message", handleMsg);
-
-    return () => window.removeEventListener("message", handleMsg);
-  }, [])
-
   // value can be json data
   // TODO: fetch JSON from cookies / localstorage and validate via JSON validation library
   // once user wallet is verified, user info stored as cookie
@@ -191,6 +181,63 @@ function App() {
     });
   }
 
+    //Initialize a wallet
+    initWallet()
+
+    //Begin Ethereum Wallet Transaction Listener
+    useEffect(() => {
+      const handleMsg = async (event) => {
+        if(event.data && event.data.type === 'button-click') {
+          console.log("cost is: $" + event.data.message)
+
+
+          // Validate wallet exists
+          console.log(walletExists())
+          if(!walletExists()) {
+            clearAllCookies()
+            initWallet()
+          }
+
+          // set cookie 
+          setCookie(keyData)
+
+          let getUserWallet = getWallet()
+          console.log(getUserWallet)
+          
+          // Request to receive JWT
+        // try {
+        //   const response = await fetch(`http://localhost:5050/address?=${}`, {
+        //     method: 'GET', // or 'POST', depending on your backend requirement
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //       // Include other headers as required
+        //     },
+        //     // body: JSON.stringify(data), // If your request needs a body
+        //   });
+
+        //   if (!response.ok) {
+        //     throw new Error(`Error: ${response.status}`);
+        //   }
+
+        //   const data = await response.json();
+        //   let JWT = data.jwt; // Assuming the JWT is returned in a 'jwt' field
+
+        //   // Enforce JWT
+        //   if (shouldRenew(JWT)) {
+        //     maintainJWT(JWT);
+        //   }
+
+        //   console.log(JWT);
+        // } catch (error) {
+        //   console.error('Error fetching JWT:', error);
+        // }
+      }
+    };
+      window.addEventListener("message", handleMsg);
+  
+      return () => window.removeEventListener("message", handleMsg);
+    }, [])
+  
   return (
     <main className="text-white">
       <div>
