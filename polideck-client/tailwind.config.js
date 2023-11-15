@@ -3,7 +3,7 @@ module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
     backgroundColor: {
-      'iframe': '#1e1e1e',
+      iframe: "#1e1e1e",
     },
     extend: {
       fontFamily: {

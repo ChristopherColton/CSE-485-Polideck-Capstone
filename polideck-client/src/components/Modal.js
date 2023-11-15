@@ -25,7 +25,7 @@ const Modal = ({ open, onClose, children }) => {
       >
         <button onClick={onClose}>X</button>
         <CustomIframe title="Child IFrame">
-          <Child/>
+          <Child />
         </CustomIframe>
         {children}
       </div>

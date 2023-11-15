@@ -8,7 +8,7 @@ const CustomIframe = ({ children, ...props }) => {
 
   useEffect(() => {
     if (contentRef?.contentWindow) {
-      const style = contentRef.contentWindow.document.createElement('style');
+      const style = contentRef.contentWindow.document.createElement("style");
       style.textContent = `
         body { 
           margin: 0; 
@@ -23,7 +23,19 @@ const CustomIframe = ({ children, ...props }) => {
   }, [contentRef]);
 
   return (
-    <iframe id="login frame" title="childIframe"  {...props} ref={setContentRef} style={{ margin:0, padding:0, width: '100%', height: '25vh', border: 'none', }}>
+    <iframe
+      id="login frame"
+      title="childIframe"
+      {...props}
+      ref={setContentRef}
+      style={{
+        margin: 0,
+        padding: 0,
+        width: "100%",
+        height: "25vh",
+        border: "none",
+      }}
+    >
       {mountNode && createPortal(children, mountNode)}
     </iframe>
   );
