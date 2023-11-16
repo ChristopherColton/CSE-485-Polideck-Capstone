@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { ImmortalStorage, CookieStore, LocalStorageStore } from "immortal-db";
 import { ethers } from "ethers";
 import "./App.css";
+import axios from "axios";
 
 // CookieStore -> keys and values are stored in document.cookie
 // IndexedDbStore -> keys and values are stored in window.indexedDB
@@ -15,6 +16,25 @@ const db = new ImmortalStorage(stores);
 
 function App() {
   const [keyData, setKeyData] = useState("");
+  const [ethRate, setEthRate] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+      )
+      .then((response) => {
+        setEthRate(response.data.ethereum.usd);
+      })
+      .catch((error) => {
+        console.error("Error fetching ETH rate", error);
+      });
+  }, []);
+
+  const convertUsdToEth = (usdAmount) => {
+    if (!ethRate) return 0;
+    return usdAmount / ethRate;
+  };
 
   //Maintains JWT validity
   async function maintainJWT(newJWT) {
@@ -135,6 +155,7 @@ function App() {
     if (!walletStatus) {
       let etherWallet = await ethers.Wallet.createRandom();
       console.log("ether wallet does not exist; created random");
+
       let wallet = {
         address: etherWallet.address,
         publicKey: etherWallet.publicKey,
@@ -238,27 +259,56 @@ function App() {
           // Get JWT data from request
           const jwtData = await jwtResponse.json();
           let JWT = jwtData.jwt;
-          console.log(JWT);
-
-          // Validate JWT -- NOTE: maintainJWT needs changes in port
+          console.log(JWT);          
+          // http://localhost:5000/send-transaction
+        } catch (error) {
+          console.error("Error fetching JWT:", error);
+        }
+                  // Validate JWT -- NOTE: maintainJWT needs changes in port
           // if (shouldRenew(JWT)) {
           //   maintainJWT(JWT);
           // }
 
           // Create JSON to send to API Gateway
+          const usdAmount = parseFloat(event.data.message);
+          const ethAmount = convertUsdToEth(usdAmount);
+          console.log(`usdAmount: ${usdAmount}\n ethAmount: ${ethAmount}`)
+
           let sendJWT = {
-            USD: event.data.message,
-            jwtToken: JWT,
+            transactionCost: ethAmount,
+            gas: 6721975,
+            gas_price_gwei: 20,
+            sender: userWalletAddress,
+            senderPrivKey: getUserWallet.privateKey
           };
 
-        } catch (error) {
-          console.error("Error fetching JWT:", error);
-        }
+          console.log(sendJWT)
+          console.log(`http://192.168.68.60:5000/send-transaction/?transaction_amount=${sendJWT.transactionCost}&gas=${sendJWT.gas}&gas_price=${sendJWT.gas_price_gwei}&from_address=${sendJWT.sender}&sender_private_key=${sendJWT.senderPrivKey}`)
+          try {
+            const transactionResponse = await fetch(
+              `http://73.252.161.250:5000/send-transaction/?transaction_amount=${sendJWT.transactionCost}&gas=${sendJWT.gas}&gas_price=${sendJWT.gas_price_gwei}&from_address=${sendJWT.sender}&sender_private_key=${sendJWT.senderPrivKey}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              },
+            );
+  
+            if (!transactionResponse.ok) {
+              throw new Error(`Error: ${transactionResponse.status}`);
+            }
+            const resData = await transactionResponse.json()
+            console.log(resData)
+          }
+          catch(error) {
+            console.log(error)
+          }
       }
     };
     window.addEventListener("message", handleMsg);
     return () => window.removeEventListener("message", handleMsg);
-  }, []);
+  });
 
   return (
     <main className="text-white">
