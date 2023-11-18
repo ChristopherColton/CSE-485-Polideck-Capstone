@@ -16,8 +16,7 @@ const CustomIframe = ({ children, ...props }) => {
           width: 100%; 
           overflow: hidden;
         }
-        /* Additional styles can be added here */
-      `;
+        `;
       contentRef.contentWindow.document.head.appendChild(style);
     }
   }, [contentRef]);
@@ -36,7 +35,7 @@ const CustomIframe = ({ children, ...props }) => {
         border: "none",
       }}
     >
-      {mountNode && createPortal(children, mountNode)}
+      {mountNode && createPortal(<>{children}</>, mountNode)}
     </iframe>
   );
 };

@@ -1,9 +1,10 @@
 import Game from "./components/Game";
 import { useState, useEffect } from "react";
 import { ImmortalStorage, CookieStore, LocalStorageStore } from "immortal-db";
-import { ethers } from "ethers";
+import { ethers, parseUnits } from "ethers";
 import "./App.css";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 // CookieStore -> keys and values are stored in document.cookie
 // IndexedDbStore -> keys and values are stored in window.indexedDB
@@ -15,8 +16,8 @@ const stores = [new CookieStore(), new LocalStorageStore()];
 const db = new ImmortalStorage(stores);
 
 function App() {
-  const [keyData, setKeyData] = useState("");
   const [ethRate, setEthRate] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -202,6 +203,80 @@ function App() {
     });
   }
 
+  // Fetch request to get JWT token
+  async function receiveJWT(userWalletAddress) {
+    let JWT = null;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5050/api/getNonce?address=${userWalletAddress}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let jwtNonce = data.nonce;
+
+      const jwtResponse = await fetch(
+        `http://localhost:5050/api/login?address=${userWalletAddress}&nonce=${jwtNonce}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (!jwtResponse.ok) {
+        throw new Error(`Error: ${jwtResponse.status}`);
+      }
+
+      // Get JWT data from request
+      const jwtData = await jwtResponse.json();
+      
+      JWT = jwtData.jwt;
+    } catch (error) {
+      console.error("Error fetching JWT:", error);
+    }
+
+    return JWT;
+  }
+
+  async function sendTransactionData(transactionData) {
+    let transactionSuccess = null;
+    try {
+      const transactionResponse = await fetch(
+        `http://73.252.161.250/send-transaction`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(transactionData),
+        },
+      );
+
+      if (!transactionResponse.ok) {
+        throw new Error(`Error: ${transactionResponse.status}`);
+      } else {
+        const resData = await transactionResponse.json();
+
+        transactionSuccess = resData.Transaction_Status;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    return transactionSuccess;
+  }
+
   //Initialize a wallet
   initWallet();
 
@@ -217,93 +292,51 @@ function App() {
           initWallet();
         }
 
-        // set cookie
-        // setCookie(keyData)
+        // TO-DO: set cookie
+        // setCookie(...)
 
         let getUserWallet = await getWallet();
         let userWalletAddress = getUserWallet.address;
 
-        // Request to receive JWT
-        try {
-          const response = await fetch(
-            `http://localhost:5050/api/getNonce?address=${userWalletAddress}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            },
-          );
+        // Get JWT token from auth server
+        let JWTtoken = await receiveJWT(userWalletAddress);
 
-          if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-          }
+        if (!JWTtoken) {
+          console.log("JWT not received");
+        } else {
+          console.log("JWT received");
 
-          const data = await response.json();
-          let jwtNonce = data.nonce;
-
-          const jwtResponse = await fetch(
-            `http://localhost:5050/api/login?address=${userWalletAddress}&nonce=${jwtNonce}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error(`Error: ${jwtResponse.status}`);
-          }
-
-          // Get JWT data from request
-          const jwtData = await jwtResponse.json();
-          let JWT = jwtData.jwt;
-          console.log(JWT);          
-          // http://localhost:5000/send-transaction
-        } catch (error) {
-          console.error("Error fetching JWT:", error);
-        }
-                  // Validate JWT -- NOTE: maintainJWT needs changes in port
-          // if (shouldRenew(JWT)) {
-          //   maintainJWT(JWT);
-          // }
-
-          // Create JSON to send to API Gateway
+          // Validate JWT -- NOTE: maintainJWT needs changes in port
+          /* if (shouldRenew(JWT)) {
+          maintainJWT(JWT);
+        }*/
           const usdAmount = parseFloat(event.data.message);
           const ethAmount = convertUsdToEth(usdAmount);
-          console.log(`usdAmount: ${usdAmount}\n ethAmount: ${ethAmount}`)
 
-          let sendJWT = {
-            transactionCost: ethAmount,
+          // Create JSON to send to API Gateway
+          let transactionCost = {
+            transaction_amount: ethAmount,
             gas: 6721975,
-            gas_price_gwei: 20,
-            sender: userWalletAddress,
-            senderPrivKey: getUserWallet.privateKey
+            gas_price: 20,
+            // from_address: userWalletAddress,  //client side generated address
+            //sender_private_key: getUserWallet.privateKey,
+            from_address: "0xae01BcD0bBAa2Bd3B1abE0b910ABe14A0Ea8f85d", //testing address (ganache generated address)
+            sender_private_key:
+              "0x574cd238aa3832123dad293925b351b2a7f8f6dd5bdbaee1c70c315e29affac9", //test address key
           };
 
-          console.log(sendJWT)
-          console.log(`http://192.168.68.60:5000/send-transaction/?transaction_amount=${sendJWT.transactionCost}&gas=${sendJWT.gas}&gas_price=${sendJWT.gas_price_gwei}&from_address=${sendJWT.sender}&sender_private_key=${sendJWT.senderPrivKey}`)
-          try {
-            const transactionResponse = await fetch(
-              `http://73.252.161.250:5000/send-transaction/?transaction_amount=${sendJWT.transactionCost}&gas=${sendJWT.gas}&gas_price=${sendJWT.gas_price_gwei}&from_address=${sendJWT.sender}&sender_private_key=${sendJWT.senderPrivKey}`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              },
-            );
-  
-            if (!transactionResponse.ok) {
-              throw new Error(`Error: ${transactionResponse.status}`);
-            }
-            const resData = await transactionResponse.json()
-            console.log(resData)
+          let transaction = await sendTransactionData(transactionCost);
+          if (transaction !== null) {
+            dispatch({
+              type: "RESET_TRANSACTION_STATUS"
+            })
+            dispatch({
+              type: "SET_TRANSACTION_SUCCESS",
+              payload: { ...transaction },
+              // payload: {...transaction, timestamp: new Date().getTime()}
+            });
           }
-          catch(error) {
-            console.log(error)
-          }
+        }
       }
     };
     window.addEventListener("message", handleMsg);
@@ -321,9 +354,6 @@ function App() {
           <div className="flex flex-col items-center mb-4">
             <Game />
           </div>
-          {/* <input placeholder='Enter User Id' onChange={(e) => {
-          setKeyData(e.target.value);
-        }}/> */}
           <div className="flex flex-col items-center space-y-4">
             <div className="flex flex-col items-center"></div>
           </div>

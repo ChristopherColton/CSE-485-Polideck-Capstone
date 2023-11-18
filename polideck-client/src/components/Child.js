@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../App.css";
+
 const Child = () => {
   const [childMsg, setChildMsg] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -20,6 +21,7 @@ const Child = () => {
         },
         "*",
       );
+
       // window.open("https://www.example.com/");
     } else {
       setIsValid(false);
