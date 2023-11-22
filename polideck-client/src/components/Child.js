@@ -38,12 +38,12 @@ const Child = () => {
   };
 
   //Set gas price to 20,000 gwei
-  let gasFeeUSD = convertGweiToUSD(20000);
+  let gasFeeUSD = convertGweiToUSD(20);
 
   // Displays total cost of the item with fee
   const calculateTotalAmount = () => {
     const inputAmount = parseFloat(childMsg) || 0;
-    const gasFeeUSD = convertGweiToUSD(20000);
+    const gasFeeUSD = convertGweiToUSD(20);
     return inputAmount + gasFeeUSD;
   };
 
