@@ -20,15 +20,6 @@ const Modal = ({ open, onClose, children }) => {
     }
   }, [transactionSuccess]);
 
-  // validate useEffect is working
-  /*useEffect(() => {
-    if (showAlert) {
-      console.log("showAlert is now true");
-    } else {
-      console.log("showAlert is now false");
-    }
-  }, [showAlert]);*/
-
   return (
     <div
       className={`fixed flex justify-center items-center inset-0 ${
@@ -37,11 +28,13 @@ const Modal = ({ open, onClose, children }) => {
     >
       {showAlert && (
         <div
-          className={`fixed top-0 inset-x-0 p-4 text-center text-white ${
+          className={`fixed top-0 inset-x-0 p-4 font-mono text-center text-white text-2xl font-black ${
             transactionSuccess ? "bg-green-500" : "bg-red-500"
           } transition-opacity duration-1000 ease-out ${
-            !showAlert && "opacity-0 transform translate-y-[-100%]"
-          }`}
+            showAlert
+              ? "opacity-100"
+              : "opacity-0 transform translate-y-[-100%]"
+          } z-10`} // Added z-index for layering
         >
           {transactionSuccess
             ? "Transaction Successful"

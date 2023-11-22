@@ -26,8 +26,8 @@ const Game = () => {
             alt="valorant"
             src="https://cdn.arstechnica.net/wp-content/uploads/2020/04/valorant-listing-800x450.jpg"
           />
-          <h1 className="text-2xl font-righteous text-white uppercase text-center">
-            Game Title
+          <h1 className="mt-2 text-2xl tracking-wide font-righteous text-white uppercase text-center">
+            Valorant
           </h1>
           <h2 className="items-center content-center text-center text-white">
             {message}
@@ -38,7 +38,7 @@ const Game = () => {
             onClick={() => {
               setOpen(true);
             }}
-            className="bg-blue-200 p-2 rounded-lg hover:bg-blue-300 font-lato transition duration-200 uppercase"
+            className="bg-blue-800 p-2 rounded-lg hover:bg-blue-700 font-lato transition duration-200 uppercase font-semibold tracking-widest"
           >
             Purchase
           </button>

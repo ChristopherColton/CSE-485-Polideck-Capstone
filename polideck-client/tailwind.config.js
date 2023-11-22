@@ -2,10 +2,10 @@
 module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
-    backgroundColor: {
-      iframe: "#1e1e1e",
-    },
     extend: {
+      backgroundColor: {
+        iframe: "#1e1e1e",
+      },
       fontFamily: {
         righteous: ["Righteous", "sans-serif"],
         lato: ["Lato", "sans-serif"],

@@ -14,8 +14,8 @@ const transactionReducer = (state = initialState, action) => {
     case "RESET_TRANSACTION_STATUS":
       return {
         ...state,
-        transactionSuccess: initialState.transaction
-      }
+        transactionSuccess: initialState.transaction,
+      };
     default:
       return state;
   }

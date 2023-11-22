@@ -169,10 +169,7 @@ function App() {
     }
     return;
   }
-  // value can be json data
-  // TODO: fetch JSON from cookies / localstorage and validate via JSON validation library
-  // once user wallet is verified, user info stored as cookie
-  // so they can proceed with application
+
   const wallet = {
     api: "wallet",
     op: "getPublicAddr",
@@ -241,7 +238,7 @@ function App() {
 
       // Get JWT data from request
       const jwtData = await jwtResponse.json();
-      
+
       JWT = jwtData.jwt;
     } catch (error) {
       console.error("Error fetching JWT:", error);
@@ -328,8 +325,8 @@ function App() {
           let transaction = await sendTransactionData(transactionCost);
           if (transaction !== null) {
             dispatch({
-              type: "RESET_TRANSACTION_STATUS"
-            })
+              type: "RESET_TRANSACTION_STATUS",
+            });
             dispatch({
               type: "SET_TRANSACTION_SUCCESS",
               payload: { ...transaction },
