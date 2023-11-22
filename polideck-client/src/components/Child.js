@@ -1,10 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../App.css";
+import axios from "axios";
+import WebFont from "webfontloader";
 
 const Child = () => {
+  useEffect(() => {
+    WebFont.load({
+      google: {
+        families: ['Roboto:400,700'] // Replace 'Roboto' with your desired font
+      }
+    });
+  }, []);
   const [childMsg, setChildMsg] = useState("");
   const [isValid, setIsValid] = useState(true);
+  const [ethRate, setEthRate] = useState(null);
+  const [totalAmount, setTotalAmount] = useState(0);
 
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd",
+      )
+      .then((response) => {
+        setEthRate(response.data.ethereum.usd);
+      })
+      .catch((error) => {
+        console.error("Error fetching ETH rate", error);
+      });
+  }, []);
+
+  const convertGweiToUSD = (gweiAmount) => {
+    if (!ethRate) return 0;
+    return (gweiAmount/1e9) * ethRate
+  }
+
+  let gasFeeUSD = convertGweiToUSD(20000)
+  
+  const calculateTotalAmount = () => {
+    const inputAmount = parseFloat(childMsg) || 0;
+    const gasFeeUSD = convertGweiToUSD(20000);
+    return inputAmount + gasFeeUSD;
+  };
+
+  useEffect(() => {
+    setTotalAmount(calculateTotalAmount());
+  }, [childMsg, ethRate]);
+  
   // Post a message to the parent page and open a new window
   const postToParent = () => {
     if (
@@ -33,7 +74,7 @@ const Child = () => {
     const newMessage = e.target.value;
     setChildMsg(newMessage);
   };
-
+  
   return (
     <div
       style={{
@@ -44,6 +85,7 @@ const Child = () => {
     >
       <h1
         style={{
+          fontFamily: 'Roboto, sans-serif',
           color: "#ffffff",
           marginBottom: "15px",
           textAlign: "center",
@@ -59,7 +101,7 @@ const Child = () => {
           marginTop: "40px",
         }}
       >
-        <p style={{ color: "#ffffff", margin: "0 10px 0 0", fontSize: "20px" }}>
+        <p style={{ color: "#ffffff", fontFamily: 'Roboto, sans-serif', margin: "0 8px 0 0", fontSize: "20px" }}>
           Price ($)
         </p>
         <input
@@ -78,7 +120,13 @@ const Child = () => {
           required
         />
       </div>
+      <p style={{ color: "#ffffff", fontFamily: 'Roboto, sans-serif', margin: "0 10px 0 0", paddingBottom:"10px", fontSize: "20px" }}>
+Gas Fee (USD): <span>${gasFeeUSD.toFixed(2)}</span> 
+</p>
 
+<p style={{ color: "#ffffff", fontFamily: 'Roboto, sans-serif',margin: "10px 10px 0 0", paddingBottom: "20px", fontSize: "20px" }}>
+      Total Amount (USD): <span>${totalAmount.toFixed(2)}</span>
+    </p>
       <button
         style={{
           backgroundColor: "#4caf50",
@@ -90,13 +138,15 @@ const Child = () => {
           transition: "background-color 0.3s ease",
           width: "100%",
           fontSize: "20px",
+          letterSpacing: "3px",
+          fontWeight: "bold"
         }}
         onClick={postToParent}
       >
         PURCHASE
       </button>
       {!isValid && (
-        <p style={{ color: "#ff5555", marginTop: "20px" }}>
+        <p style={{ color: "#ff5555", fontFamily: 'Roboto, sans-serif', marginTop: "20px" }}>
           Please enter a valid amount.
         </p>
       )}

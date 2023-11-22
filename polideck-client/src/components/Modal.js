@@ -34,7 +34,7 @@ const Modal = ({ open, onClose, children }) => {
             showAlert
               ? "opacity-100"
               : "opacity-0 transform translate-y-[-100%]"
-          } z-10`} // Added z-index for layering
+          } z-10`} 
         >
           {transactionSuccess
             ? "Transaction Successful"

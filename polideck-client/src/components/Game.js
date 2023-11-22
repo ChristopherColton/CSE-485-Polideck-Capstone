@@ -29,9 +29,7 @@ const Game = () => {
           <h1 className="mt-2 text-2xl tracking-wide font-righteous text-white uppercase text-center">
             Valorant
           </h1>
-          <h2 className="items-center content-center text-center text-white">
-            {message}
-          </h2>
+
         </div>
         <div className="p-4">
           <button

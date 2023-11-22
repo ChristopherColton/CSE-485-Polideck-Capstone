@@ -303,7 +303,7 @@ function App() {
         } else {
           console.log("JWT received");
 
-          // Validate JWT -- NOTE: maintainJWT needs changes in port
+          // Validate JWT -- NOTE: maintainJWT not implemented 
           /* if (shouldRenew(JWT)) {
           maintainJWT(JWT);
         }*/
@@ -314,7 +314,7 @@ function App() {
           let transactionCost = {
             transaction_amount: ethAmount,
             gas: 6721975,
-            gas_price: 20,
+            gas_price: 20000,
             // from_address: userWalletAddress,  //client side generated address
             //sender_private_key: getUserWallet.privateKey,
             from_address: "0xae01BcD0bBAa2Bd3B1abE0b910ABe14A0Ea8f85d", //testing address (ganache generated address)
