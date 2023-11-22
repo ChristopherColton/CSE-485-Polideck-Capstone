@@ -303,7 +303,7 @@ function App() {
         } else {
           console.log("JWT received");
 
-          // Validate JWT -- NOTE: maintainJWT not implemented 
+          // Validate JWT -- NOTE: maintainJWT not implemented
           /* if (shouldRenew(JWT)) {
           maintainJWT(JWT);
         }*/

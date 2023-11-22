@@ -29,7 +29,6 @@ const Game = () => {
           <h1 className="mt-2 text-2xl tracking-wide font-righteous text-white uppercase text-center">
             Valorant
           </h1>
-
         </div>
         <div className="p-4">
           <button
