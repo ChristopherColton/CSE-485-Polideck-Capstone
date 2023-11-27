@@ -58,5 +58,22 @@ describe('Child Component', () => {
     expect(mockPostMessage).not.toHaveBeenCalled();
   });
 
-  // Add more test cases for different input scenarios...
+  test('a symbol', () => {
+    const { getByPlaceholderText, getByText } = render(<Child />);
+    fireEvent.change(getByPlaceholderText('0.00'), { target: { value: '#' } });
+    fireEvent.click(getByText('PURCHASE'));
+    expect(mockPostMessage).not.toHaveBeenCalled();
+  });
+
+  test('Gas Fee Calculation', () => {   
+    const mockEthRate = 200;
+  
+    jest.mock('axios');
+    jest.spyOn(require('axios'), 'get').mockResolvedValue({ data: { ethereum: { usd: mockEthRate } } });
+    const { container } = render(<Child />);
+    const gasFeeElement = container.querySelector('p span'); 
+    const gasFeeValue = parseFloat(gasFeeElement.textContent.slice(1)); 
+    const expectedGasFee = (20 / 1e9) * mockEthRate;
+    expect(gasFeeValue).toBeCloseTo(expectedGasFee, 2); 
+  });
 });
