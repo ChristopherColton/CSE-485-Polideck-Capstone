@@ -340,6 +340,33 @@ function App() {
     return () => window.removeEventListener("message", handleMsg);
   });
 
+  const games = [
+    {
+      title: "Valorant",
+      src: "https://cdn.arstechnica.net/wp-content/uploads/2020/04/valorant-listing-800x450.jpg",
+    },
+    {
+      title: "Raft",
+      src: "https://cdn.arstechnica.net/wp-content/uploads/2023/02/raft-title-800x450.jpg",
+    },
+    {
+      title: "Metro Exodus",
+      src: "https://cdn.arstechnica.net/wp-content/uploads/2019/02/metro-exodus-cover-800x450.jpg",
+    },
+    {
+      title: "Mass Effect (LC Edition)",
+      src: "https://cdn.arstechnica.net/wp-content/uploads/2020/11/MEL-800x450.jpg",
+    },
+    {
+      title: "Baldaur's Gate",
+      src: "https://deltiasgaming.com/wp-content/uploads/2023/06/Baldurs-Gate-3-System-Requirements-Windows-and-Mac-800x450.jpg",
+    },
+    {
+      title: "Warframe: Heart",
+      src: "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/steamworks_docs/english/cover.png",
+    },
+  ];
+
   return (
     <main className="text-white">
       <div>
@@ -348,11 +375,13 @@ function App() {
       </div>
       <div className="flex justify-center items-center h-screen bg-gradient-to-bl from-purple-900 to-blue-500">
         <div className="flex flex-col items-center w-full">
-          <div className="flex flex-col items-center mb-4">
-            <Game />
-          </div>
-          <div className="flex flex-col items-center space-y-4">
-            <div className="flex flex-col items-center"></div>
+          {/* Rendering rows of games */}
+          <div className="flex flex-wrap justify-center items-center">
+            {games.map((game, index) => (
+              <div key={index} className="m-4 flex justify-center items-center">
+                <Game title={game.title} gameSrc={game.src} />
+              </div>
+            ))}
           </div>
         </div>
       </div>

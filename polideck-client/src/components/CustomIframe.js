@@ -31,7 +31,7 @@ const CustomIframe = ({ children, ...props }) => {
         margin: 0,
         padding: 0,
         width: "100%",
-        height: "30vh",
+        height: "350px",
         border: "none",
       }}
     >

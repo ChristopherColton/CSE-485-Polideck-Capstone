@@ -11,7 +11,7 @@ const Child = () => {
       },
     });
   }, []);
-  
+
   const [childMsg, setChildMsg] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [ethRate, setEthRate] = useState(null);

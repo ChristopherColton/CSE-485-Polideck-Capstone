@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 
-const Game = () => {
+const Game = ({ title, gameSrc }) => {
   // Modal State
   const [open, setOpen] = useState(false);
 
@@ -22,12 +22,12 @@ const Game = () => {
       <div className="flex flex-col justify-center w-[45%] items-center rounded-lg bg-gradient-to-bl from-blue-400 to-indigo-500">
         <div className="w-full h-full content-center items-center">
           <img
-            className="flex rounded-lg h-full w-full border bg-auto bg-center"
-            alt="valorant"
-            src="https://cdn.arstechnica.net/wp-content/uploads/2020/04/valorant-listing-800x450.jpg"
+            className="flex rounded-lg w-[800px] h-[200px] h-full w-full border bg-auto bg-center"
+            alt="game"
+            src={gameSrc} // https://cdn.arstechnica.net/wp-content/uploads/2020/04/valorant-listing-800x450.jpg
           />
           <h1 className="mt-2 text-2xl tracking-wide font-righteous text-white uppercase text-center">
-            Valorant
+            {title}
           </h1>
         </div>
         <div className="p-4">
